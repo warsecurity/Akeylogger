@@ -1,13 +1,13 @@
 ```markdown
 # Android Keylogger
 
-![Project Banner](1.png)
+![Project Banner](1.jpg)
 
 Educational Android keyboard keylogger based on FlorisBoard. It captures keystrokes from a custom keyboard and sends them to a Node.js server. This project is for research and security training only.
 
 ## Features
 
-![Features](2.png)
+![Features](2.jpg)
 
 - Custom keyboard keylogging without Accessibility
 - Dynamic server URL from GitHub config fallback
@@ -18,7 +18,7 @@ Educational Android keyboard keylogger based on FlorisBoard. It captures keystro
 
 ## Installation
 
-![Installation](3.png)
+![Installation](3.jpg)
 
 ### Build from source
 
@@ -106,7 +106,7 @@ Install on target device
 
 Usage
 
-4.png
+4.jpg
 
 Run the server
 
@@ -208,10 +208,10 @@ Akeylogger/
 ├── package.json
 ├── public/
 │   └── index.html
-├── 1.png
-├── 2.png
-├── 3.png
-├── 4.png
+├── 1.jpg
+├── 2.jpg
+├── 3.jpg
+├── 4.jpg
 └── README.md
 ```
 
@@ -219,9 +219,8 @@ Disclaimer
 
 This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
 
-Contact
 
-WarSecurity Research Team
+
 
 GitHub: https://github.com/warsecurity
 
