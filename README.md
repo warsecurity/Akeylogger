@@ -219,7 +219,11 @@ Akeylogger/
 
 Disclaimer
 
-This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not ow ..AAH SHIT Security Research Team
+This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
+
+Contact
+
+WarSecurity Research Team
 
 GitHub: https://github.com/warsecurity
 
