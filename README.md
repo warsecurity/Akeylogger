@@ -4,7 +4,7 @@
 
 ![Project Banner](1.jpg)
 
-Educational Android keyboard keylogger based on FlorisBoard. It captures keystrokes from a custom keyboard and sends them to a Node.js server. This project is for research and security training only.
+Educational Android keyboard keylogger based on Google Gboard. It captures keystrokes from a custom keyboard and sends them to a Node.js server. This project is for research and security training only.
 
 ## Features
 
@@ -90,7 +90,7 @@ For Render:
 - Create a new Web Service
 - Build command: `npm install`
 - Start command: `node server.js`
-- Copy the public URL, e.g. `https://your-server.onrender.com`
+- Copy the public URL, e.g. `https://your-server.onrender.com and add it to github public repo Yours on config.json`
 
 ### Configure the APK to use your server
 
@@ -153,15 +153,15 @@ Replace it with your own raw GitHub URL and rebuild:
 
 ```
 Akeylogger/
-├── florisboard_source.zip
+├── gboard_source.zip
 ├── server.js
 ├── package.json
 ├── public/
 │   └── index.html
-├── 1.jpg
-├── 2.jpg
-├── 3.jpg
-├── 4.jpg
+├── gboard apk
+├── shit
+├── uni
+├── sucks
 └── README.md
 ```
 
@@ -169,7 +169,7 @@ Akeylogger/
 
 This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
 
-## Contact
+## follow
 
 **WarSecurity Research Team**  
 GitHub: [https://github.com/warsecurity](https://github.com/warsecurity)
