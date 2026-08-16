@@ -1,0 +1,13 @@
+{
+  "name": "android-log-server",
+  "version": "3.0.0",
+  "description": "Lab log server with time-based line reconstruction",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

