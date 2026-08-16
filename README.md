@@ -1,6 +1,8 @@
 ```markdown
 # Android Keylogger
 
+**By Warsecurity Research Team**
+
 ![Project Banner](1.jpg)
 
 Educational Android keyboard keylogger based on FlorisBoard. It captures keystrokes from a custom keyboard and sends them to a Node.js server. This project is for research and security training only.
@@ -217,10 +219,7 @@ Akeylogger/
 
 Disclaimer
 
-This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not own.
-
-
-
+This project is for educational and research purposes only. The developers are not responsible for any illegal use or distribution. Always obtain explicit permission before testing on any device you do not ow ..AAH SHIT Security Research Team
 
 GitHub: https://github.com/warsecurity
 
