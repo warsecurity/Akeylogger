@@ -1,6 +1,6 @@
 # Android Keylogger
 
-**By Warsecurity rootkitnull**
+** rootkitnull**
 
 ![Project Banner](1.jpg)
 
